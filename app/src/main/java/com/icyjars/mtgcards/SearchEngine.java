@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -28,6 +26,23 @@ public class SearchEngine {
         -1, 400,  403, 404, 500, 503
     };
 
+
+    /*
+
+        TODO: check all characters occurs in MtG card names
+        chcecked: space :'-()/,!._?&
+        url dangerous: ?&
+        "[^A-Za-z0-9\\:\\'\\-\\(\\)\\/\\,\\!\\.\\_ ]"
+
+        TODO: check: not all cards are found with special characters, different records compared to gatherer.wizards, example: ' (one character "'")
+        Some special characters breaks url's, ex. '?&
+        ex. https://api.magicthegathering.io/v1/cards?name='&page=1
+
+    */
+
+    public static String stringIllegalValidator = "[^A-Za-z0-9 ]";
+
+
     private static SearchEngine mInstance = null;
 
     private static String baseURL = "https://api.magicthegathering.io/v1/cards";
@@ -39,7 +54,6 @@ public class SearchEngine {
     private int savedCount = 0;
 
     private SearchEngine(){
-
     }
 
     public static SearchEngine getInstance(){
@@ -57,11 +71,13 @@ public class SearchEngine {
         if(withParameters)
             url += "?" + "name=" + cardName;
 
-        int page = 1;
+        int page = 0;
         int responseCode = ERROR_CODES[0];
 
         // TODO replace multiple connection in loop with one connection before loop
         while(savedCount < totalCount) {
+
+            page++;
 
             String nextUrl;
 

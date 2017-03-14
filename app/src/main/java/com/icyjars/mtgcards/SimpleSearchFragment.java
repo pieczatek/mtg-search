@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 
+import java.util.regex.Pattern;
+
 
 public class SimpleSearchFragment extends Fragment {
 
@@ -37,6 +39,18 @@ public class SimpleSearchFragment extends Fragment {
             public void onClick(View view) {
 
                 String cardName = cardNameTextView.getText().toString();
+
+                if (Pattern.compile(SearchEngine.stringIllegalValidator).matcher(cardName).find()){
+                    cardNameTextView.setError("Special characters are not supported yet. Use only A-Z, a-z or 0-9 characters!");
+                    return;
+                }
+
+                cardName = cardName.replaceAll("^\\s+","").replaceAll("\\s+$","").replaceAll("\\s+"," ");
+                cardNameTextView.setText(cardName);
+                if (cardName.length()<3){
+                    cardNameTextView.setError("Type at least 3 characters!");
+                    return;
+                }
 
                 searchEngine.clearQuery();
                 searchEngine.setName(cardName);
