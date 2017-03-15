@@ -12,8 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 
 public class MainActivity extends AppCompatActivity implements
         CardsListFragment.OnListFragmentInteractionListener,

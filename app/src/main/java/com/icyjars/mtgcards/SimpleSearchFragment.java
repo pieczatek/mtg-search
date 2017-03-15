@@ -10,18 +10,24 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.os.Handler;
+import android.widget.ProgressBar;
 
 import java.util.regex.Pattern;
 
 
 public class SimpleSearchFragment extends Fragment {
 
-    View view;
-    Button searchButton;
-    EditText cardNameTextView;
-    private OnNewSearchRecordListener mListener;
+    private View mView;
+    private Button searchButton;
+    private EditText cardNameTextView;
 
+    private OnNewSearchRecordListener mListener;
     private SearchEngine searchEngine = SearchEngine.getInstance();
+    private Handler mainThreadHandler;
+    private ProgressBar searchProgressBar;
+
+    int resposneCode = -666;
 
     public SimpleSearchFragment() {
     }
@@ -30,10 +36,14 @@ public class SimpleSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_simple_search, container, false);
+        mView = inflater.inflate(R.layout.fragment_simple_search, container, false);
 
-        cardNameTextView = (EditText) view.findViewById(R.id.simpleSearchEditText);
-        searchButton = (Button) view.findViewById(R.id.simpleSearchButton);
+        cardNameTextView = (EditText) mView.findViewById(R.id.simpleSearchEditText);
+        searchButton = (Button) mView.findViewById(R.id.simpleSearchButton);
+        mainThreadHandler = new Handler(getActivity().getMainLooper());
+        searchProgressBar = (ProgressBar) mView.findViewById(R.id.simpleSearchProgressBar);
+        searchProgressBar.setVisibility(View.GONE);
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,27 +64,53 @@ public class SimpleSearchFragment extends Fragment {
 
                 searchEngine.clearQuery();
                 searchEngine.setName(cardName);
+                searchProgressBar.setMax(100);
+                searchProgressBar.setProgress(0);
+                searchProgressBar.setVisibility(View.VISIBLE);
 
-                int resposneCode = searchEngine.executeQuery();
+                Thread searchingThread = new Thread(new Runnable() {
 
-                for (int errorCode : SearchEngine.ERROR_CODES)
-                    if(resposneCode == errorCode) {
-                        mListener.onNewSearchRecord(resposneCode);
-                        return;
+                    Runnable callbackMainThread = new Runnable() {
+                        @Override
+                        public void run() {
+                            finishedSearching();
+                        }
+                    };
+
+                    public void run() {
+                        // TODO: change way to update progressbar (MVC) - don't pass View element to Controller
+                        resposneCode = searchEngine.executeQuery(searchProgressBar);
+                        mainThreadHandler.post(callbackMainThread);
                     }
 
-                mListener.onNewSearchRecord(searchEngine.getContainer());
+                });
+
+                searchingThread.start();
 
             }
         });
 
-        return view;
+        return mView;
+    }
+
+    private void finishedSearching(){
+
+        searchProgressBar.setVisibility(View.GONE);
+
+        for (int errorCode : SearchEngine.ERROR_CODES)
+            if(resposneCode == errorCode) {
+                mListener.onNewSearchRecord(resposneCode);
+                return;
+            }
+
+        mListener.onNewSearchRecord(searchEngine.getContainer());
+
     }
 
     public void setPopupWindow(PopupWindow popupWindow){
-        int offx=(view.getWidth()-popupWindow.getWidth())/2;
-        int offy=(-view.getHeight()-popupWindow.getHeight())/2;
-        popupWindow.showAsDropDown(view,offx,offy);
+        int offx=(mView.getWidth()-popupWindow.getWidth())/2;
+        int offy=(-mView.getHeight()-popupWindow.getHeight())/2;
+        popupWindow.showAsDropDown(mView,offx,offy);
     }
 
     public interface OnNewSearchRecordListener{

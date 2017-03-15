@@ -1,6 +1,8 @@
 package com.icyjars.mtgcards;
 
 import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +65,7 @@ public class SearchEngine {
         return mInstance;
     }
 
-    public int executeQuery(){
+    public int executeQuery(ProgressBar progressBar){
 
         container = new LightCardsListInfoContainer();
 
@@ -98,6 +100,10 @@ public class SearchEngine {
             } catch (JSONException e) {
                 System.out.print(e.toString());
             }
+
+            System.out.println("PROGRESS: " + savedCount + "/" + totalCount + " = " + 100*savedCount/totalCount + "%");
+            progressBar.setMax(totalCount);
+            progressBar.setProgress(savedCount);
 
         };
 
