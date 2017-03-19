@@ -2,8 +2,12 @@ package com.icyjars.mtgcards;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +16,46 @@ import android.view.ViewGroup;
 public class CardsListFragment extends Fragment
 implements CardsListAdapter.OnListItemClickListener{
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     protected View mView = null;
+
+    private class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
+        private Drawable mDivider;
+
+        public SimpleDividerItemDecoration(Context context) {
+            mDivider = context.getResources().getDrawable(R.drawable.divider);
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            super.getItemOffsets(outRect, view, parent, state);
+
+            if (parent.getChildAdapterPosition(view) == 0) {
+                return;
+            }
+
+            outRect.top = mDivider.getIntrinsicHeight();
+        }
+
+        @Override
+        public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
+            int dividerLeft = parent.getPaddingLeft();
+            int dividerRight = parent.getWidth() - parent.getPaddingRight();
+
+            int childCount = parent.getChildCount();
+            for (int i = 0; i < childCount - 1; i++) {
+                View child = parent.getChildAt(i);
+
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+
+                int dividerTop = child.getBottom() + params.bottomMargin;
+                int dividerBottom = dividerTop + mDivider.getIntrinsicHeight();
+
+                mDivider.setBounds(dividerLeft, dividerTop, dividerRight, dividerBottom);
+                mDivider.draw(canvas);
+            }
+        }
+    }
 
     public CardsListFragment() {
     }
@@ -23,10 +63,6 @@ implements CardsListAdapter.OnListItemClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
     }
 
     @Override
@@ -34,6 +70,7 @@ implements CardsListAdapter.OnListItemClickListener{
                              Bundle savedInstanceState) {
         if (mView == null) {
             mView = inflater.inflate(R.layout.fragment_card_list, container, false);
+            ((RecyclerView)mView).addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         }
         return mView;
     }

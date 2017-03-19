@@ -2,33 +2,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SimpleSearchFragment">
-
-    <!-- TODO: Update blank fragment layout -->
+    tools:context=".SimpleSearchFragment"
+    android:padding="5dp">
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="5dp" >
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
+            android:background="@drawable/border"
+            android:padding="8dp"
             android:text="Derevi"
             android:ems="10"
-            android:id="@+id/simpleSearchEditText" />
-
-        <Button
-            android:text="Search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/simpleSearchButton" />
+            android:id="@+id/simpleSearchEditText"/>
 
         <ProgressBar
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/simpleSearchProgressBar" />
+            android:id="@+id/simpleSearchProgressBar"/>
+
+        <Button
+            android:text="Search"
+            android:layout_width="100dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:id="@+id/simpleSearchButton"
+            android:background="@drawable/border"/>
+
+
     </LinearLayout>
 </FrameLayout>

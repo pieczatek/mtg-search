@@ -42,7 +42,7 @@ public class SimpleSearchFragment extends Fragment {
         searchButton = (Button) mView.findViewById(R.id.simpleSearchButton);
         mainThreadHandler = new Handler(getActivity().getMainLooper());
         searchProgressBar = (ProgressBar) mView.findViewById(R.id.simpleSearchProgressBar);
-        searchProgressBar.setVisibility(View.GONE);
+        searchProgressBar.setVisibility(View.INVISIBLE);
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +95,7 @@ public class SimpleSearchFragment extends Fragment {
 
     private void finishedSearching(){
 
-        searchProgressBar.setVisibility(View.GONE);
+        searchProgressBar.setVisibility(View.INVISIBLE);
 
         for (int errorCode : SearchEngine.ERROR_CODES)
             if(resposneCode == errorCode) {
