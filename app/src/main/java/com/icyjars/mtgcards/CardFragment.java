@@ -1,7 +1,11 @@
 package com.icyjars.mtgcards;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -12,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -32,14 +37,11 @@ import javax.net.ssl.HttpsURLConnection;
 public class CardFragment extends Fragment {
 
     private View mView = null;
-    private TableLayout tableLayout = null;
     private String cardName;
     private int multiverseid = -1;
     private static String baseURL = "https://api.magicthegathering.io/v1/cards";
 
     private static final Spannable.Factory spannableFactory = Spannable.Factory.getInstance();
-
-    private String[] fields = {"name","type","text"};
 
     JSONObject cardInfo = null;
 
@@ -62,61 +64,57 @@ public class CardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        if (mView != null && tableLayout != null)
+        if (mView != null)
             return mView;
 
         mView = inflater.inflate(R.layout.fragment_card, container, false);
-        tableLayout = (TableLayout)mView.findViewById(R.id.card_table);
-
-        connect();
-        fillTable();
 
         return mView;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        super.onViewCreated(view,savedInstanceState);
+        connect();
+        fillTable();
+    }
+
     private void fillTable(){
+
+        //TableLayout tableLayout = (TableLayout)getActivity().findViewById(R.id.card_table);
 
         try {
 
-            ImageView iv = new ImageView(getActivity());
+            ImageView iv = (ImageView)getActivity().findViewById(R.id.cardImageView);
             String imageUrl = cardInfo.getString("imageUrl");
-
             InputStream is = (InputStream) new URL(imageUrl).getContent();
             Drawable d = Drawable.createFromStream(is, "card image " + cardName);
             iv.setImageDrawable(d);
 
+            //((TableRow)iv.getParent()).setMinimumHeight(b.getHeight());
 
-
-            tableLayout.addView(iv);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
 
+        fillTextView("name", R.id.cardName);
+        fillTextView("type", R.id.cardTypes);
+        fillTextView("text", R.id.cardText);
 
-        for (String field : fields){
 
-            try {
-                TextView tv = new TextView(getActivity());
+    }
 
-                tv.setPadding(50,50,50,50);
-                //tv.setBackgroundColor(Color.rgb(200,220,255));
-                tv.setBackgroundColor(Color.BLACK);
-                tv.setTextColor(Color.WHITE);
+    private void fillTextView(String cardParam, int textViewID){
 
-                Spannable spannable = spannableFactory.newSpannable(cardInfo.getString(field));
-                addMTGSymbols(spannable,tv.getLineHeight());
-                tv.setText(spannable);
-                tableLayout.addView(tv);
+        Spannable spannable;
+        TextView tv = (TextView)getActivity().findViewById(textViewID);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
+        try{
+            spannable = spannableFactory.newSpannable(cardInfo.getString(cardParam));
+            addMTGSymbols(spannable,tv.getLineHeight());
+            tv.setText(spannable);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
     }
