@@ -19,6 +19,7 @@
             android:padding="8dp"
             android:text="Derevi"
             android:ems="10"
+            android:textColor="#fefefe"
             android:id="@+id/simpleSearchEditText"/>
 
         <ProgressBar

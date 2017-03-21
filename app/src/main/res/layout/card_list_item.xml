@@ -29,7 +29,7 @@
             android:id="@+id/card_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#333"
+            android:textColor="#fdf5b8"
             android:textSize="20sp" />
 
         <TextView
