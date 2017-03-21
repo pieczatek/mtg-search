@@ -1,87 +1,65 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView
+    android:scrollbars="none"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.icyjars.mtgcards.CardFragment"
-    android:padding="10dp" >
+    android:padding="10dp">
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:scrollbars="none">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TableLayout
+        <TextView
+            android:text="cmc"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:background="@drawable/card_param_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/card_table"
-            android:divider="@drawable/divider"
-            android:showDividers="middle"
-            android:stretchColumns="0">
+            android:id="@+id/cardCmc" />
 
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="fill_parent">
+        <TextView
+            android:text="NAME"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cardName"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@id/cardCmc"
+            android:background="@drawable/card_param_background"
+            android:padding="10dp" />
 
-                <!--RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+        <TextView
+            android:text="TYPES"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/cardName"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/cardTypes"
+            android:background="@drawable/card_param_background"
+            android:padding="10dp" />
 
-                    <ImageButton
-                        app:srcCompat="@drawable/card_icon"
-                        android:id="@+id/imageButton3"
-                        android:background="@drawable/border_button"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:layout_width="40dip"
-                        android:layout_height="40dip"
-                        android:baselineAlignBottom="false"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:scaleType="fitCenter"
-                        android:adjustViewBounds="false"
-                         />
-                </RelativeLayout-->
-            </TableRow>
+        <TextView
+            android:text="TEXT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/cardText"
+            android:layout_below="@id/cardTypes"
+            android:background="@drawable/border"
+            android:padding="10dp" />
 
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+        <TextView
+            android:text="3/4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_param_background"
+            android:layout_below="@id/cardText"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:id="@+id/cardPower"/>
 
-                <TextView
-                    android:text=""
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/cardName"
-                    android:background="@drawable/border"
-                    android:padding="10dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:text=""
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/cardTypes"
-                    android:background="@drawable/border"
-                    android:padding="10dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:text=""
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/cardText"
-                    android:background="@drawable/border"
-                    android:padding="10dp" />
-            </TableRow>
-        </TableLayout>
-    </ScrollView>
-</FrameLayout>
+    </RelativeLayout>
+</ScrollView>
