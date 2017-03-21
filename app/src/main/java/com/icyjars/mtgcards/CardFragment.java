@@ -83,6 +83,7 @@ public class CardFragment extends Fragment {
 
         //TableLayout tableLayout = (TableLayout)getActivity().findViewById(R.id.card_table);
 
+        /*
         try {
 
             ImageView iv = (ImageView)getActivity().findViewById(R.id.cardImageView);
@@ -96,6 +97,7 @@ public class CardFragment extends Fragment {
         } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
+        */
 
         fillTextView("name", R.id.cardName);
         fillTextView("type", R.id.cardTypes);
@@ -121,7 +123,8 @@ public class CardFragment extends Fragment {
 
     private void addMTGSymbols(Spannable spannable, int lineHight){
 
-        lineHight *= 0.9f;
+        float lineOffset = lineHight*0.15f;
+
         System.out.println("MATCHER: " + spannable);
 
         Pattern pattern = Pattern.compile("\\{(" +
@@ -147,8 +150,11 @@ public class CardFragment extends Fragment {
                 d = getResources().getDrawable(R.drawable.x);
             }
 
-            d.setBounds(0, 0, lineHight, lineHight);
-            ImageSpan is = new ImageSpan(d,ImageSpan.ALIGN_BASELINE);
+            int off = Math.round(lineOffset);
+            d.setBounds(0, off, lineHight - off, lineHight);
+
+            //TODO: align center
+            ImageSpan is = new ImageSpan(d,ImageSpan.ALIGN_BOTTOM);
             spannable.setSpan(is,matcher.start(),matcher.end(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         }

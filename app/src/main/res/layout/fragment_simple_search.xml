@@ -33,7 +33,7 @@
             android:layout_gravity="center"
             android:layout_height="wrap_content"
             android:id="@+id/simpleSearchButton"
-            android:background="@drawable/border"/>
+            android:background="@drawable/border_button"/>
 
 
     </LinearLayout>
