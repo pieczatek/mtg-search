@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Array;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -99,24 +100,37 @@ public class CardFragment extends Fragment {
         }
         */
 
-        fillTextView("name", R.id.cardName);
-        fillTextView("type", R.id.cardTypes);
-        fillTextView("text", R.id.cardText);
+        fillTextView("name", R.id.cardName, true, "");
+        fillTextView("type", R.id.cardTypes, true, "");
+        fillTextView("text", R.id.cardText, true, "");
+        fillTextView("manaCost", R.id.cardCmc, true, "");
+        fillTextView("power", R.id.cardPower, true, "");
+        fillTextView("toughness", R.id.cardPower, false, " / ");
 
 
     }
 
-    private void fillTextView(String cardParam, int textViewID){
+    private void fillTextView(String cardParam, int textViewID, boolean replaceText, String prefix){
 
-        Spannable spannable;
+        Spannable spannable = null;
         TextView tv = (TextView)getActivity().findViewById(textViewID);
 
         try{
-            spannable = spannableFactory.newSpannable(cardInfo.getString(cardParam));
-            addMTGSymbols(spannable,tv.getLineHeight());
-            tv.setText(spannable);
+            String s = cardInfo.getString(cardParam);
+            if (s.length() > 0) {
+                if(replaceText)
+                    spannable = spannableFactory.newSpannable(prefix + s);
+                else
+                    spannable = spannableFactory.newSpannable(tv.getText() + prefix + s);
+                addMTGSymbols(spannable, tv.getLineHeight());
+                tv.setText(spannable);
+            }
+            else{
+                tv.setVisibility(View.GONE);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
+            tv.setVisibility(View.GONE);
         }
 
     }
