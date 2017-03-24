@@ -3,12 +3,15 @@ package com.icyjars.mtgcards;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements
     RecyclerView recyclerView;
     private final FragmentManager fragmentManager = getFragmentManager();
     private Fragment currentFragment = null;
+    private Fragment currentToolbar = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +39,18 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         currentFragment = new SimpleSearchFragment();
+        currentToolbar = new MainToolbarFragment();
         fragmentTransaction.replace(R.id.content_main, currentFragment);
+        fragmentTransaction.replace(R.id.navigation_main, currentToolbar);
         fragmentTransaction.commit();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        /*
+        currentToolbar = (Toolbar) findViewById(R.id.mainToolbar);
+        setSupportActionBar(currentToolbar);
+        */
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -67,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onListFragmentInteraction(String cardName, int multiverseid) {
 
-        setNewFragment(new CardFragment());
+        setNewFragment(new CardFragment(), new CardToolbarFragment());
         ((CardFragment)currentFragment).setCardName(cardName);
         ((CardFragment)currentFragment).setCardMultiverseId(multiverseid);
         this.fragmentManager.executePendingTransactions();
@@ -75,11 +85,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    private void setNewFragment(Fragment newFragment){
+    private void setNewFragment(Fragment newFragment, Fragment newToolbarFragment){
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         currentFragment = newFragment;
+        currentToolbar = newToolbarFragment;
         fragmentTransaction.replace(R.id.content_main, currentFragment);
+        fragmentTransaction.replace(R.id.navigation_main, currentToolbar);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
 
@@ -88,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onNewSearchRecord(LightCardsListInfoContainer container) {
 
-        setNewFragment(new CardsListFragment());
+        setNewFragment(new CardsListFragment(), new SearchToolbarFragment());
         this.fragmentManager.executePendingTransactions();
 
         recyclerView = (RecyclerView)((CardsListFragment)currentFragment).mView;
