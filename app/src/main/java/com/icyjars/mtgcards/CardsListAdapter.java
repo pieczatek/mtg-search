@@ -7,14 +7,45 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CardsListAdapter extends RecyclerView.Adapter<CardsListAdapter.ViewHolder>{
 
     private LightCardsListInfoContainer data;
     private OnListItemClickListener mListener;
 
-    public CardsListAdapter() {
+    List<Mtgio.Card> mData;
 
+    public CardsListAdapter() {
+        super();
+        mData = new ArrayList<>();
     }
+
+    public void addData(Mtgio mtgio){
+        for (Mtgio.Card c : mtgio.getCards()) {
+            mergeCard(c);
+        }
+        notifyDataSetChanged();
+    }
+
+    private void mergeCard(Mtgio.Card card) {
+
+        synchronized (mData) {
+            int index = mData.indexOf(card.getName());
+
+            if (index >= 0) {
+                int id1 = mData.get(index).getMultiverseid();
+                int id2 = card.getMultiverseid();
+                mData.get(index).setMultiverseid(Math.max(id1, id2));
+            } else {
+                mData.add(card);
+            }
+
+            mData.notify();
+        }
+    }
+
 
     public void setListener(Fragment fragment){
 

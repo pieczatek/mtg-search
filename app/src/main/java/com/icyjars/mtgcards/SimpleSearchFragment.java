@@ -13,7 +13,14 @@ import android.widget.PopupWindow;
 import android.os.Handler;
 import android.widget.ProgressBar;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class SimpleSearchFragment extends Fragment {
@@ -27,7 +34,12 @@ public class SimpleSearchFragment extends Fragment {
     private Handler mainThreadHandler;
     private ProgressBar searchProgressBar;
 
-    int resposneCode = -666;
+    private int MAX_PROGRESS = 100;
+    private int resposneCode = -666;
+    private int pageSize;
+    private int totalCount;
+    private int totalPages;
+
 
     public SimpleSearchFragment() {
     }
@@ -64,9 +76,59 @@ public class SimpleSearchFragment extends Fragment {
 
                 searchEngine.clearQuery();
                 searchEngine.setName(cardName);
-                searchProgressBar.setMax(100);
+                searchProgressBar.setMax(MAX_PROGRESS);
                 searchProgressBar.setProgress(0);
                 searchProgressBar.setVisibility(View.VISIBLE);
+
+                /*
+                MtgioService service = ServiceFactory.createRetrofitService(MtgioService.class,MtgioService.SERVICE_ENDPOINT);
+                Map<String,String>params = new HashMap<>();
+                params.put("name",cardName);
+
+                int page = 1;
+                params.put("page", String.valueOf(page));
+
+                Call<Mtgio> call = service.getCards(params);
+                Response<Mtgio> response;
+
+
+                try {
+
+                    // synchro for first call
+                    response = call.execute();
+
+                    pageSize = Integer.valueOf(response.headers().get("Page-Size"));
+                    totalCount = Integer.valueOf(response.headers().get("Total-Count"));
+                    totalPages = (int)Math.ceil((double) totalCount/(double)pageSize);
+                    searchProgressBar.incrementProgressBy(MAX_PROGRESS/totalPages);
+
+
+                    // async for call 2..n
+                    while(page < totalPages) {
+
+                        page++;
+                        params.put("page", String.valueOf(page));
+
+                        call = service.getCards(params);
+                        call.enqueue(new Callback<Mtgio>() {
+                            @Override
+                            public void onResponse(Call<Mtgio> call, Response<Mtgio> response) {
+                                searchProgressBar.incrementProgressBy(MAX_PROGRESS/totalPages);
+                                System.out.println("elo");
+                            }
+
+                            @Override
+                            public void onFailure(Call<Mtgio> call, Throwable t) {
+                                System.out.println("nie elo");
+                            }
+                        });
+
+                    }
+
+                }catch (IOException | NumberFormatException e){
+                    System.out.println(e.toString());
+                }
+                */
 
                 Thread searchingThread = new Thread(new Runnable() {
 
