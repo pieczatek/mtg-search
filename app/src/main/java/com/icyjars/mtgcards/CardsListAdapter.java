@@ -12,14 +12,17 @@ import java.util.List;
 
 public class CardsListAdapter extends RecyclerView.Adapter<CardsListAdapter.ViewHolder>{
 
-    private LightCardsListInfoContainer data;
     private OnListItemClickListener mListener;
-
-    List<Mtgio.Card> mData;
+    private final List<Mtgio.Card> mData;
 
     public CardsListAdapter() {
         super();
         mData = new ArrayList<>();
+    }
+
+    public void clearData(){
+        mData.clear();
+        notifyDataSetChanged();
     }
 
     public void addData(Mtgio mtgio){
@@ -32,7 +35,7 @@ public class CardsListAdapter extends RecyclerView.Adapter<CardsListAdapter.View
     private void mergeCard(Mtgio.Card card) {
 
         synchronized (mData) {
-            int index = mData.indexOf(card.getName());
+            int index = mData.indexOf(card);
 
             if (index >= 0) {
                 int id1 = mData.get(index).getMultiverseid();
@@ -73,16 +76,13 @@ public class CardsListAdapter extends RecyclerView.Adapter<CardsListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        String cardName = data.getName(position);
+        Mtgio.Card card = mData.get(position);
 
-        holder.cardNameTextView.setText(cardName);
-        holder.cardTypesTextView.setText(data.getTypes(position));
-        holder.lastMultiverseId = data.getLastMultiverseId(cardName);
+        holder.cardNameTextView.setText(card.getName());
+        holder.cardTypesTextView.setText(card.getType());
+        holder.lastMultiverseId = card.getMultiverseid();
+
         holder.mListener = mListener;
-    }
-
-    public void setContainer(LightCardsListInfoContainer container){
-        data = container;
     }
 
     public interface OnListItemClickListener{
@@ -92,7 +92,7 @@ public class CardsListAdapter extends RecyclerView.Adapter<CardsListAdapter.View
 
     @Override
     public int getItemCount() {
-        return data.getLength();
+        return mData.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements

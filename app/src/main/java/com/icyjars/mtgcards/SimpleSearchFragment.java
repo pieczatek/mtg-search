@@ -33,6 +33,7 @@ public class SimpleSearchFragment extends Fragment {
     private SearchEngine searchEngine = SearchEngine.getInstance();
     private Handler mainThreadHandler;
     private ProgressBar searchProgressBar;
+    private CardsListAdapter adapter;
 
     private int MAX_PROGRESS = 100;
     private int resposneCode = -666;
@@ -80,7 +81,7 @@ public class SimpleSearchFragment extends Fragment {
                 searchProgressBar.setProgress(0);
                 searchProgressBar.setVisibility(View.VISIBLE);
 
-                /*
+
                 MtgioService service = ServiceFactory.createRetrofitService(MtgioService.class,MtgioService.SERVICE_ENDPOINT);
                 Map<String,String>params = new HashMap<>();
                 params.put("name",cardName);
@@ -92,10 +93,13 @@ public class SimpleSearchFragment extends Fragment {
                 Response<Mtgio> response;
 
 
+
                 try {
 
                     // synchro for first call
                     response = call.execute();
+                    adapter = mListener.onNewSearchRecord();
+                    adapter.addData(response.body());
 
                     pageSize = Integer.valueOf(response.headers().get("Page-Size"));
                     totalCount = Integer.valueOf(response.headers().get("Total-Count"));
@@ -113,6 +117,7 @@ public class SimpleSearchFragment extends Fragment {
                         call.enqueue(new Callback<Mtgio>() {
                             @Override
                             public void onResponse(Call<Mtgio> call, Response<Mtgio> response) {
+                                adapter.addData(response.body());
                                 searchProgressBar.incrementProgressBy(MAX_PROGRESS/totalPages);
                                 System.out.println("elo");
                             }
@@ -125,11 +130,11 @@ public class SimpleSearchFragment extends Fragment {
 
                     }
 
-                }catch (IOException | NumberFormatException e){
+                }catch (IOException | NumberFormatException | NullPointerException e){
                     System.out.println(e.toString());
                 }
-                */
 
+                /*
                 Thread searchingThread = new Thread(new Runnable() {
 
                     Runnable callbackMainThread = new Runnable() {
@@ -148,7 +153,7 @@ public class SimpleSearchFragment extends Fragment {
                 });
 
                 searchingThread.start();
-
+                */
             }
         });
 
@@ -165,7 +170,7 @@ public class SimpleSearchFragment extends Fragment {
                 return;
             }
 
-        mListener.onNewSearchRecord(searchEngine.getContainer());
+        //mListener.onNewSearchRecord(searchEngine.getContainer());
 
     }
 
@@ -176,7 +181,7 @@ public class SimpleSearchFragment extends Fragment {
     }
 
     public interface OnNewSearchRecordListener{
-        void onNewSearchRecord(LightCardsListInfoContainer container);
+        CardsListAdapter onNewSearchRecord();
         void onNewSearchRecord(int responseCode);
     }
 

@@ -11,8 +11,8 @@ public class Mtgio {
 
         @Override
         public boolean equals(Object other){
-            if (other instanceof String) {
-                return this.getName().equals(other);
+            if (other instanceof Card) {
+                return this.getName().equals(((Card) other).getName());
             }
             else {
                 return super.equals(other);
