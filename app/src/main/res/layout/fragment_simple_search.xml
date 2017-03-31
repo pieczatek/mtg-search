@@ -6,7 +6,7 @@
     tools:context=".Fragment.SimpleSearchFragment"
     android:padding="5dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:padding="5dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -21,21 +21,33 @@
             android:text="Derevi"
             android:ems="10"
             android:textColor="#fefefe"
-            android:id="@+id/simpleSearchEditText" />
+            android:id="@+id/simpleSearchEditText"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/simpleSearchButton"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <Button
+            android:text=">"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/simpleSearchButton"
+            android:background="@drawable/border_button"
+            android:minHeight="0dp"
+            android:minWidth="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@+id/simpleSearchEditText" />
 
         <ProgressBar
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/simpleSearchProgressBar" />
+            android:id="@+id/simpleSearchProgressBar"
+            android:layout_alignParentTop="false"
+            android:layout_below="@+id/simpleSearchEditText"/>
 
-        <Button
-            android:text="Search"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/simpleSearchButton"
-            android:background="@drawable/border_button" />
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </FrameLayout>
