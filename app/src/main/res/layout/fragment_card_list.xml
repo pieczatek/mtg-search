@@ -12,5 +12,5 @@
     android:layout_marginRight="2dp"
     app:layoutManager="LinearLayoutManager"
     android:padding="10dp"
-    tools:context="com.icyjars.mtgcards.CardsListFragment"
+    tools:context="com.icyjars.mtgcards.Fragment.CardsListFragment"
     tools:listitem="@layout/fragment_card" />

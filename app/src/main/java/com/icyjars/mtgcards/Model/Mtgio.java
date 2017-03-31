@@ -1,4 +1,4 @@
-package com.icyjars.mtgcards;
+package com.icyjars.mtgcards.Model;
 
 import java.util.List;
 

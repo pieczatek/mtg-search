@@ -1,4 +1,7 @@
-package com.icyjars.mtgcards;
+package com.icyjars.mtgcards.Service;
+
+import com.icyjars.mtgcards.Model.Mtgio;
+import com.icyjars.mtgcards.Model.MtgioSingleCard;
 
 import java.util.Map;
 

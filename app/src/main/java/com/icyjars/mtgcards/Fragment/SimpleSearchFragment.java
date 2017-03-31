@@ -1,4 +1,4 @@
-package com.icyjars.mtgcards;
+package com.icyjars.mtgcards.Fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,9 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.PopupWindow;
-import android.os.Handler;
 import android.widget.ProgressBar;
+
+import com.icyjars.mtgcards.CardsListAdapter;
+import com.icyjars.mtgcards.Model.Mtgio;
+import com.icyjars.mtgcards.Service.MtgioService;
+import com.icyjars.mtgcards.R;
+import com.icyjars.mtgcards.Service.ServiceFactory;
 
 import java.io.IOException;
 import java.util.HashMap;

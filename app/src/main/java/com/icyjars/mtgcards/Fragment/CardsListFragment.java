@@ -1,4 +1,4 @@
-package com.icyjars.mtgcards;
+package com.icyjars.mtgcards.Fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,9 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.icyjars.mtgcards.CardsListAdapter;
+import com.icyjars.mtgcards.R;
+
 
 public class CardsListFragment extends Fragment
-implements CardsListAdapter.OnListItemClickListener{
+implements CardsListAdapter.OnListItemClickListener {
 
     private OnListFragmentInteractionListener mListener;
     protected View mView = null;
