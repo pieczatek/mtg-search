@@ -2,10 +2,12 @@ package com.icyjars.mtgcards;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -26,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements
         StrictMode.setThreadPolicy(policy);
 
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         adapter = new CardsListAdapter();
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
