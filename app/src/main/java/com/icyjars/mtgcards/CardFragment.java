@@ -1,6 +1,5 @@
 package com.icyjars.mtgcards;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -13,11 +12,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 
@@ -61,28 +60,21 @@ public class CardFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState){
         super.onViewCreated(view,savedInstanceState);
 
-        final ProgressDialog loading = new ProgressDialog(getActivity());
-        loading.setMessage("loading");
-        loading.setCancelable(false);
-        loading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        loading.show();
-
         MtgioService service = ServiceFactory.createRetrofitService(MtgioService.class,MtgioService.SERVICE_ENDPOINT);
-        service.getSingleCard(multiverseid)
-                .enqueue(new Callback<MtgioSingleCard> (){
+        Call<MtgioSingleCard> call = service.getSingleCard(multiverseid);
+        Response<MtgioSingleCard> response;
 
-                    @Override
-                    public void onResponse(Call<MtgioSingleCard> call, Response<MtgioSingleCard> response) {
-                        fillTable(response.body().getCard());
-                        loading.dismiss();
-                    }
+        try {
 
-                    @Override
-                    public void onFailure(Call<MtgioSingleCard> call, Throwable t) {
-                        loading.dismiss();
-                        Toast.makeText(getActivity(),"failed on internet connection with " + cardName,Toast.LENGTH_SHORT).show();
-                    }
-                });
+            response = call.execute();
+            fillTable(response.body().getCard());
+
+        } catch (IOException e) {
+
+            Toast.makeText(getActivity(),"failed on internet connection with " + cardName,Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+
+        }
 
     }
 
