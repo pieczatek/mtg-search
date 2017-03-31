@@ -26,20 +26,35 @@ import retrofit2.Response;
 public class SimpleSearchFragment extends Fragment {
 
     private View mView;
-    private Button searchButton;
     private EditText cardNameTextView;
 
     private OnNewSearchRecordListener mListener;
-    private SearchEngine searchEngine = SearchEngine.getInstance();
-    private Handler mainThreadHandler;
     private ProgressBar searchProgressBar;
     private CardsListAdapter adapter;
 
     private int MAX_PROGRESS = 100;
-    private int resposneCode = -666;
     private int pageSize;
     private int totalCount;
     private int totalPages;
+
+    private int[] ERROR_CODES = {
+            400,  403, 404, 500, 503
+    };
+
+    private String stringIllegalValidator = "[^A-Za-z0-9 ]";
+
+    /*
+
+        TODO: check all characters occurs in MtG card names
+        chcecked: space :'-()/,!._?&
+        url dangerous: ?&
+        "[^A-Za-z0-9\\:\\'\\-\\(\\)\\/\\,\\!\\.\\_ ]"
+
+        TODO: check: not all cards are found with special characters, different records compared to gatherer.wizards, example: ' (one character "'")
+        Some special characters breaks url's, ex. '?&
+        ex. https://api.magicthegathering.io/v1/cards?name='&page=1
+
+    */
 
 
     public SimpleSearchFragment() {
@@ -52,18 +67,17 @@ public class SimpleSearchFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_simple_search, container, false);
 
         cardNameTextView = (EditText) mView.findViewById(R.id.simpleSearchEditText);
-        searchButton = (Button) mView.findViewById(R.id.simpleSearchButton);
-        mainThreadHandler = new Handler(getActivity().getMainLooper());
         searchProgressBar = (ProgressBar) mView.findViewById(R.id.simpleSearchProgressBar);
         searchProgressBar.setVisibility(View.INVISIBLE);
 
+        Button searchButton = (Button) mView.findViewById(R.id.simpleSearchButton);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 String cardName = cardNameTextView.getText().toString();
 
-                if (Pattern.compile(SearchEngine.stringIllegalValidator).matcher(cardName).find()){
+                if (Pattern.compile(stringIllegalValidator).matcher(cardName).find()){
                     cardNameTextView.setError("Special characters are not supported yet. Use only A-Z, a-z or 0-9 characters!");
                     return;
                 }
@@ -75,12 +89,9 @@ public class SimpleSearchFragment extends Fragment {
                     return;
                 }
 
-                searchEngine.clearQuery();
-                searchEngine.setName(cardName);
                 searchProgressBar.setMax(MAX_PROGRESS);
                 searchProgressBar.setProgress(0);
                 searchProgressBar.setVisibility(View.VISIBLE);
-
 
                 MtgioService service = ServiceFactory.createRetrofitService(MtgioService.class,MtgioService.SERVICE_ENDPOINT);
                 Map<String,String>params = new HashMap<>();
@@ -91,8 +102,6 @@ public class SimpleSearchFragment extends Fragment {
 
                 Call<Mtgio> call = service.getCards(params);
                 Response<Mtgio> response;
-
-
 
                 try {
 
@@ -119,12 +128,11 @@ public class SimpleSearchFragment extends Fragment {
                             public void onResponse(Call<Mtgio> call, Response<Mtgio> response) {
                                 adapter.addData(response.body());
                                 searchProgressBar.incrementProgressBy(MAX_PROGRESS/totalPages);
-                                System.out.println("elo");
                             }
 
                             @Override
                             public void onFailure(Call<Mtgio> call, Throwable t) {
-                                System.out.println("nie elo");
+
                             }
                         });
 
@@ -133,38 +141,17 @@ public class SimpleSearchFragment extends Fragment {
                 }catch (IOException | NumberFormatException | NullPointerException e){
                     System.out.println(e.toString());
                 }
-
-                /*
-                Thread searchingThread = new Thread(new Runnable() {
-
-                    Runnable callbackMainThread = new Runnable() {
-                        @Override
-                        public void run() {
-                            finishedSearching();
-                        }
-                    };
-
-                    public void run() {
-                        // TODO: change way to update progressbar (MVC) - don't pass View element to Controller
-                        resposneCode = searchEngine.executeQuery(searchProgressBar);
-                        mainThreadHandler.post(callbackMainThread);
-                    }
-
-                });
-
-                searchingThread.start();
-                */
             }
         });
 
         return mView;
     }
 
-    private void finishedSearching(){
+    private void finishedSearching(int resposneCode){
 
         searchProgressBar.setVisibility(View.INVISIBLE);
 
-        for (int errorCode : SearchEngine.ERROR_CODES)
+        for (int errorCode : ERROR_CODES)
             if(resposneCode == errorCode) {
                 mListener.onNewSearchRecord(resposneCode);
                 return;
@@ -172,12 +159,6 @@ public class SimpleSearchFragment extends Fragment {
 
         //mListener.onNewSearchRecord(searchEngine.getContainer());
 
-    }
-
-    public void setPopupWindow(PopupWindow popupWindow){
-        int offx=(mView.getWidth()-popupWindow.getWidth())/2;
-        int offy=(-mView.getHeight()-popupWindow.getHeight())/2;
-        popupWindow.showAsDropDown(mView,offx,offy);
     }
 
     public interface OnNewSearchRecordListener{
