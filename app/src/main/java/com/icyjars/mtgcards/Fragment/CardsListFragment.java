@@ -11,8 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.icyjars.mtgcards.CardsListAdapter;
+import com.icyjars.mtgcards.Model.Mtgio;
 import com.icyjars.mtgcards.R;
 
 
@@ -20,7 +22,13 @@ public class CardsListFragment extends Fragment
 implements CardsListAdapter.OnListItemClickListener {
 
     private OnListFragmentInteractionListener mListener;
-    protected View mView = null;
+    private View mView = null;
+
+    private CardsListAdapter adapter;
+    private RecyclerView recyclerView;
+    private ProgressBar searchProgressBar;
+
+    private int MAX_PROGRESS = 100;
 
     private class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
         private Drawable mDivider;
@@ -71,11 +79,34 @@ implements CardsListAdapter.OnListItemClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (mView == null) {
-            mView = inflater.inflate(R.layout.fragment_card_list, container, false);
-            ((RecyclerView)mView).addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
-        }
+        if (mView != null)
+            return mView;
+
+        mView = inflater.inflate(R.layout.fragment_card_list, container, false);
+        adapter = new CardsListAdapter();
+
+
+        adapter.setListener(this);
+
+        recyclerView = (RecyclerView) mView.findViewById(R.id.list);
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
+        recyclerView.setAdapter(adapter);
+
+        searchProgressBar = (ProgressBar) mView.findViewById(R.id.simpleSearchProgressBar);
+
+        searchProgressBar.setMax(MAX_PROGRESS);
+        searchProgressBar.setProgress(0);
+        searchProgressBar.setVisibility(View.VISIBLE);
+
         return mView;
+    }
+
+    public void updateData(Mtgio mtgio){
+        adapter.addData(mtgio);
+    }
+
+    public void updateData(){
+        adapter.clearData();
     }
 
 

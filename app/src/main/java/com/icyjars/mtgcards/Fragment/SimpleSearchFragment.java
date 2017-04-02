@@ -29,14 +29,10 @@ import retrofit2.Response;
 
 public class SimpleSearchFragment extends Fragment {
 
-    private View mView;
     private EditText cardNameTextView;
 
     private OnNewSearchRecordListener mListener;
-    private ProgressBar searchProgressBar;
-    private CardsListAdapter adapter;
 
-    private int MAX_PROGRESS = 100;
     private int pageSize;
     private int totalCount;
     private int totalPages;
@@ -68,16 +64,16 @@ public class SimpleSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mView = inflater.inflate(R.layout.fragment_simple_search, container, false);
+        View mView = inflater.inflate(R.layout.fragment_simple_search, container, false);
 
         cardNameTextView = (EditText) mView.findViewById(R.id.simpleSearchEditText);
-        searchProgressBar = (ProgressBar) mView.findViewById(R.id.simpleSearchProgressBar);
-        searchProgressBar.setVisibility(View.INVISIBLE);
 
         Button searchButton = (Button) mView.findViewById(R.id.simpleSearchButton);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                mListener.onNewSearchRecord();
 
                 String cardName = cardNameTextView.getText().toString();
 
@@ -93,10 +89,6 @@ public class SimpleSearchFragment extends Fragment {
                     return;
                 }
 
-                searchProgressBar.setMax(MAX_PROGRESS);
-                searchProgressBar.setProgress(0);
-                searchProgressBar.setVisibility(View.VISIBLE);
-
                 MtgioService service = ServiceFactory.createRetrofitService(MtgioService.class,MtgioService.SERVICE_ENDPOINT);
                 Map<String,String>params = new HashMap<>();
                 params.put("name",cardName);
@@ -111,13 +103,13 @@ public class SimpleSearchFragment extends Fragment {
 
                     // synchro for first call
                     response = call.execute();
-                    adapter = mListener.onNewSearchRecord();
-                    adapter.addData(response.body());
+                    mListener.onNewSearchRecord(response.body());
+
 
                     pageSize = Integer.valueOf(response.headers().get("Page-Size"));
                     totalCount = Integer.valueOf(response.headers().get("Total-Count"));
                     totalPages = (int)Math.ceil((double) totalCount/(double)pageSize);
-                    searchProgressBar.incrementProgressBy(MAX_PROGRESS/totalPages);
+                    //searchProgressBar.incrementProgressBy(MAX_PROGRESS/totalPages);
 
 
                     // async for call 2..n
@@ -130,9 +122,11 @@ public class SimpleSearchFragment extends Fragment {
                         call.enqueue(new Callback<Mtgio>() {
                             @Override
                             public void onResponse(Call<Mtgio> call, Response<Mtgio> response) {
-                                adapter.addData(response.body());
+                                mListener.onNewSearchRecord(response.body());
+                                /*
                                 int pro = (int)Math.ceil((double) MAX_PROGRESS/(double)totalPages);
                                 searchProgressBar.incrementProgressBy(pro);
+                                */
                             }
 
                             @Override
@@ -154,7 +148,7 @@ public class SimpleSearchFragment extends Fragment {
 
     private void finishedSearching(int resposneCode){
 
-        searchProgressBar.setVisibility(View.INVISIBLE);
+        //searchProgressBar.setVisibility(View.INVISIBLE);
 
         for (int errorCode : ERROR_CODES)
             if(resposneCode == errorCode) {
@@ -167,8 +161,9 @@ public class SimpleSearchFragment extends Fragment {
     }
 
     public interface OnNewSearchRecordListener{
-        CardsListAdapter onNewSearchRecord();
+        void onNewSearchRecord(Mtgio mtgio);
         void onNewSearchRecord(int responseCode);
+        void onNewSearchRecord();
     }
 
     @Override

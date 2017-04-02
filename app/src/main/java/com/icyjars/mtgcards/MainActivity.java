@@ -14,14 +14,14 @@ import android.widget.Toast;
 import com.icyjars.mtgcards.Fragment.CardFragment;
 import com.icyjars.mtgcards.Fragment.CardsListFragment;
 import com.icyjars.mtgcards.Fragment.SimpleSearchFragment;
+import com.icyjars.mtgcards.Model.Mtgio;
 
 public class MainActivity extends AppCompatActivity implements
         CardsListFragment.OnListFragmentInteractionListener,
         SimpleSearchFragment.OnNewSearchRecordListener {
 
-    private RecyclerView recyclerView = null;
+    //private RecyclerView recyclerView = null;
     private final FragmentManager fragmentManager = getFragmentManager();
-    private CardsListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        adapter = new CardsListAdapter();
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.main_linear_layout, new SimpleSearchFragment(), "SEARCH");
@@ -83,33 +81,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public CardsListAdapter onNewSearchRecord() {
+    public void onNewSearchRecord(Mtgio mtgio) {
 
-        setRecyclerView();
-        adapter.clearData();
-        return adapter;
+        CardsListFragment fragment = (CardsListFragment) fragmentManager.findFragmentByTag("LIST");
 
-    }
-
-    private void setRecyclerView(){
-
-        recyclerView = (RecyclerView) findViewById(R.id.list);
-
-        if (recyclerView == null){
-
-            adapter.clearData();
-
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            CardsListFragment fr = new CardsListFragment();
-            fragmentTransaction.add(R.id.main_linear_layout, fr, "LIST");
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-            fragmentManager.executePendingTransactions();
-
-            recyclerView = (RecyclerView) findViewById(R.id.list);
-            recyclerView.setAdapter(adapter);
-            adapter.setListener(fr);
-
+        try {
+            fragment.updateData(mtgio);
+        }catch (NullPointerException e){
+            System.out.println(e.toString());
         }
 
     }
@@ -119,6 +98,27 @@ public class MainActivity extends AppCompatActivity implements
 
         String message = String.valueOf(resposneCode) + " internet connection error";
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onNewSearchRecord(){
+
+        CardsListFragment fragment = (CardsListFragment) fragmentManager.findFragmentByTag("LIST");
+
+        if(fragment == null) {
+
+            fragment = new CardsListFragment();
+
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.main_linear_layout, fragment, "LIST");
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+            fragmentManager.executePendingTransactions();
+
+        }
+
+        fragment.updateData();
 
     }
 }
