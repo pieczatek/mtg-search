@@ -103,13 +103,13 @@ public class SimpleSearchFragment extends Fragment {
 
                     // synchro for first call
                     response = call.execute();
-                    mListener.onNewSearchRecord(response.body());
-
 
                     pageSize = Integer.valueOf(response.headers().get("Page-Size"));
                     totalCount = Integer.valueOf(response.headers().get("Total-Count"));
                     totalPages = (int)Math.ceil((double) totalCount/(double)pageSize);
-                    //searchProgressBar.incrementProgressBy(MAX_PROGRESS/totalPages);
+                    int percentProgress = (int)Math.ceil(100.0 / (double) totalPages);
+
+                    mListener.onNewSearchRecord(response.body(),percentProgress);
 
 
                     // async for call 2..n
@@ -122,11 +122,10 @@ public class SimpleSearchFragment extends Fragment {
                         call.enqueue(new Callback<Mtgio>() {
                             @Override
                             public void onResponse(Call<Mtgio> call, Response<Mtgio> response) {
-                                mListener.onNewSearchRecord(response.body());
-                                /*
-                                int pro = (int)Math.ceil((double) MAX_PROGRESS/(double)totalPages);
-                                searchProgressBar.incrementProgressBy(pro);
-                                */
+
+                                int percentProgress = (int)Math.ceil(100.0 / (double) totalPages);
+                                mListener.onNewSearchRecord(response.body(),percentProgress);
+
                             }
 
                             @Override
@@ -161,7 +160,7 @@ public class SimpleSearchFragment extends Fragment {
     }
 
     public interface OnNewSearchRecordListener{
-        void onNewSearchRecord(Mtgio mtgio);
+        void onNewSearchRecord(Mtgio mtgio, int percentProgress);
         void onNewSearchRecord(int responseCode);
         void onNewSearchRecord();
     }

@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity implements
         CardsListFragment.OnListFragmentInteractionListener,
         SimpleSearchFragment.OnNewSearchRecordListener {
 
-    //private RecyclerView recyclerView = null;
     private final FragmentManager fragmentManager = getFragmentManager();
 
     @Override
@@ -81,12 +80,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onNewSearchRecord(Mtgio mtgio) {
+    public void onNewSearchRecord(Mtgio mtgio, int percentProgress) {
 
         CardsListFragment fragment = (CardsListFragment) fragmentManager.findFragmentByTag("LIST");
 
         try {
-            fragment.updateData(mtgio);
+            fragment.updateData(mtgio,percentProgress);
         }catch (NullPointerException e){
             System.out.println(e.toString());
         }
@@ -94,9 +93,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onNewSearchRecord(int resposneCode) {
+    public void onNewSearchRecord(int responseCode) {
 
-        String message = String.valueOf(resposneCode) + " internet connection error";
+        String message = String.valueOf(responseCode) + " internet connection error";
         Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
 
     }

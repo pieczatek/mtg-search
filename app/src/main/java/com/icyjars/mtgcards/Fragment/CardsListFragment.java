@@ -25,7 +25,6 @@ implements CardsListAdapter.OnListItemClickListener {
     private View mView = null;
 
     private CardsListAdapter adapter;
-    private RecyclerView recyclerView;
     private ProgressBar searchProgressBar;
 
     private int MAX_PROGRESS = 100;
@@ -88,7 +87,7 @@ implements CardsListAdapter.OnListItemClickListener {
 
         adapter.setListener(this);
 
-        recyclerView = (RecyclerView) mView.findViewById(R.id.list);
+        RecyclerView recyclerView = (RecyclerView) mView.findViewById(R.id.list);
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         recyclerView.setAdapter(adapter);
 
@@ -96,17 +95,26 @@ implements CardsListAdapter.OnListItemClickListener {
 
         searchProgressBar.setMax(MAX_PROGRESS);
         searchProgressBar.setProgress(0);
-        searchProgressBar.setVisibility(View.VISIBLE);
 
         return mView;
     }
 
-    public void updateData(Mtgio mtgio){
+    public void updateData(Mtgio mtgio, int percentProgress){
+
+        searchProgressBar.setVisibility(View.VISIBLE);
         adapter.addData(mtgio);
+        int progress = (int)Math.ceil((double) percentProgress * (double) MAX_PROGRESS / 100.0);
+        searchProgressBar.incrementProgressBy(progress);
+        if(searchProgressBar.getProgress() >= MAX_PROGRESS)
+            searchProgressBar.setVisibility(View.INVISIBLE);
     }
 
     public void updateData(){
+
         adapter.clearData();
+        searchProgressBar.setProgress(0);
+        searchProgressBar.setVisibility(View.INVISIBLE);
+
     }
 
 
