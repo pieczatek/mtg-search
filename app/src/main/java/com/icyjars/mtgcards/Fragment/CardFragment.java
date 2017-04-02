@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
@@ -99,10 +100,10 @@ public class CardFragment extends Fragment {
 
     private void fillTextView(String cardParam, int textViewID, boolean replaceText, String prefix){
 
-        Spannable spannable;
         TextView tv = (TextView)getActivity().findViewById(textViewID);
 
-        if (cardParam.length() > 0) {
+        if (cardParam != null){
+            Spannable spannable;
             if(replaceText)
                 spannable = spannableFactory.newSpannable(prefix + cardParam);
             else
