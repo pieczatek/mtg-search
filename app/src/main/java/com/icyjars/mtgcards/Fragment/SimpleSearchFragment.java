@@ -131,7 +131,8 @@ public class SimpleSearchFragment extends Fragment {
                             @Override
                             public void onResponse(Call<Mtgio> call, Response<Mtgio> response) {
                                 adapter.addData(response.body());
-                                searchProgressBar.incrementProgressBy(MAX_PROGRESS/totalPages);
+                                int pro = (int)Math.ceil((double) MAX_PROGRESS/(double)totalPages);
+                                searchProgressBar.incrementProgressBy(pro);
                             }
 
                             @Override
