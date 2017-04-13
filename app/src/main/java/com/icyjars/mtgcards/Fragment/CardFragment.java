@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -36,7 +38,9 @@ public class CardFragment extends Fragment {
     private static final Spannable.Factory spannableFactory = Spannable.Factory.getInstance();
 
 
-    public CardFragment(){}
+    public CardFragment(){
+        setHasOptionsMenu(true);
+    }
 
     public void setCardName(String cardName){
         this.cardName = cardName;
@@ -49,6 +53,7 @@ public class CardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -82,6 +87,12 @@ public class CardFragment extends Fragment {
 
         }
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_card,menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void fillTable(MtgioSingleCard.Card c){

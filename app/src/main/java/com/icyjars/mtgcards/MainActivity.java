@@ -55,7 +55,14 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_about) {
+            Toast.makeText(this,"about",Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.action_image){
+            Toast.makeText(this,"image",Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.action_price){
+            Toast.makeText(this,"price",Toast.LENGTH_SHORT).show();
             return true;
         }
 
