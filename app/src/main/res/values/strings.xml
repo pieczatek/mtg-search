@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">MtGcards</string>
+    <string name="app_version">0.1 Beta</string>
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="base_url">https://api.magicthegathering.io/v1/cards</string>
+
+    <string name="version">Wersja: 0.1 Beta</string>
+    <string name="author">Autor: Radek Pieczątkiewicz</string>
+    <string name="contact">Contact: radek@icyjars.com</string>
+
 </resources>

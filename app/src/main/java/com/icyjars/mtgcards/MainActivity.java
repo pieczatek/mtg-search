@@ -2,13 +2,21 @@ package com.icyjars.mtgcards;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.icyjars.mtgcards.Fragment.CardFragment;
@@ -21,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements
         SimpleSearchFragment.OnNewSearchRecordListener {
 
     private final FragmentManager fragmentManager = getFragmentManager();
+    private FrameLayout mainFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +41,9 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mainFrame = (FrameLayout) findViewById(R.id.main_app_frame_layout);
+        mainFrame.getForeground().setAlpha(0);
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.main_linear_layout, new SimpleSearchFragment(), "SEARCH");
@@ -56,8 +68,20 @@ public class MainActivity extends AppCompatActivity implements
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            Toast.makeText(this,"about",Toast.LENGTH_SHORT).show();
+
+            View popupView = View.inflate(this,R.layout.popup_about,null);
+            PopupWindow popup = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);
+            popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    mainFrame.getForeground().setAlpha(0);
+                }
+            });
+            popup.showAtLocation(findViewById(R.id.main_linear_layout), Gravity.CENTER,0,0);
+            mainFrame.getForeground().setAlpha(140);
+
             return true;
+
         } else if (id == R.id.action_image){
             Toast.makeText(this,"image",Toast.LENGTH_SHORT).show();
             return true;

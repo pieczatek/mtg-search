@@ -10,7 +10,8 @@
 
     <color name="colorAccent">#fdf5b8</color>
     <color name="cardName">#fdf5b8</color>
-
+    <color name="popupName">#e7d648</color>
+    <color name="popupText">#bebebe</color>
     <color name="basicText">#ececec</color>
 
 </resources>
