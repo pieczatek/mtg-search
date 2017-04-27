@@ -21,9 +21,13 @@ import com.icyjars.mtgcards.R;
 import com.icyjars.mtgcards.Service.ServiceFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -33,6 +37,7 @@ public class CardFragment extends Fragment {
     private View mView = null;
     private String cardName;
     private int multiverseid = -1;
+    private String imageUrl = null;
     private MtgioSingleCard.Card card;
 
     private static final Spannable.Factory spannableFactory = Spannable.Factory.getInstance();
@@ -78,7 +83,8 @@ public class CardFragment extends Fragment {
         try {
 
             response = call.execute();
-            fillTable(response.body().getCard());
+            this.card = response.body().getCard();
+            fillTable();
 
         } catch (IOException e) {
 
@@ -95,9 +101,23 @@ public class CardFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void fillTable(MtgioSingleCard.Card c){
+    public InputStream getCardImageStream(){
 
-        this.card = c;
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(this.card.getImageUrl())
+                .build();
+
+        try {
+            return client.newCall(request).execute().body().byteStream();
+        }catch (IOException e){
+            return null;
+        }
+
+    }
+
+    private void fillTable(){
 
         fillTextView(card.getName(), R.id.cardName, true, "");
         fillTextView(card.getType(), R.id.cardTypes, true, "");

@@ -3,6 +3,8 @@ package com.icyjars.mtgcards;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
@@ -23,6 +26,8 @@ import com.icyjars.mtgcards.Fragment.CardFragment;
 import com.icyjars.mtgcards.Fragment.CardsListFragment;
 import com.icyjars.mtgcards.Fragment.SimpleSearchFragment;
 import com.icyjars.mtgcards.Model.Mtgio;
+
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity implements
         CardsListFragment.OnListFragmentInteractionListener,
@@ -69,28 +74,52 @@ public class MainActivity extends AppCompatActivity implements
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
 
-            View popupView = View.inflate(this,R.layout.popup_about,null);
-            PopupWindow popup = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);
-            popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    mainFrame.getForeground().setAlpha(0);
-                }
-            });
-            popup.showAtLocation(findViewById(R.id.main_linear_layout), Gravity.CENTER,0,0);
-            mainFrame.getForeground().setAlpha(140);
-
+            showPopUp(R.layout.popup_about);
             return true;
 
         } else if (id == R.id.action_image){
-            Toast.makeText(this,"image",Toast.LENGTH_SHORT).show();
+
+            View popupView = showPopUp(R.layout.popup_image);
+
+            try {
+
+                ImageView popupImageView = ((ImageView) popupView.findViewById(R.id.card_imageview));
+                CardFragment currentCardFragment = (CardFragment) fragmentManager.findFragmentByTag("CARD");
+                InputStream stream = currentCardFragment.getCardImageStream();
+                Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                popupImageView.setImageBitmap(bitmap);
+
+            }catch (NullPointerException e){
+                System.out.println(e.toString());
+            }
+
             return true;
+
         } else if (id == R.id.action_price){
             Toast.makeText(this,"price",Toast.LENGTH_SHORT).show();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private View showPopUp(int layID){
+
+
+        View popupView = View.inflate(this,layID,null);
+        PopupWindow popup = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);
+        popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                mainFrame.getForeground().setAlpha(0);
+            }
+        });
+
+        popup.showAtLocation(findViewById(R.id.main_linear_layout), Gravity.CENTER,0,0);
+        mainFrame.getForeground().setAlpha(140);
+
+        return popupView;
+
     }
 
     @Override
