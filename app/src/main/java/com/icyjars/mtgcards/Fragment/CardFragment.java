@@ -41,6 +41,8 @@ public class CardFragment extends Fragment {
     public float MAX_IMAGE_SCALE = 4f;
     public float CARD_LENGTH_RATIO = 3.5f / 2.5f;
 
+    private String prefix = "mtg_";
+
     private static final Spannable.Factory spannableFactory = Spannable.Factory.getInstance();
 
 
@@ -183,10 +185,10 @@ public class CardFragment extends Fragment {
             Drawable d;
 
             try {
-                int resID = getResources().getIdentifier(resourcesSymbolName,"drawable",getActivity().getPackageName());
+                int resID = getResources().getIdentifier(prefix+resourcesSymbolName,"drawable",getActivity().getPackageName());
                 d = getResources().getDrawable(resID);
             }catch (Exception e){
-                d = getResources().getDrawable(R.drawable.x);
+                d = getResources().getDrawable(R.drawable.mtg_x);
             }
 
             int off = Math.round(lineOffset);
