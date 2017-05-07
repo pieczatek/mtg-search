@@ -20,7 +20,7 @@
             android:padding="8dp"
             android:text="Derevi"
             android:ems="10"
-            android:textColor="#fefefe"
+            android:textColor="@color/enterText"
 
             android:id="@+id/simpleSearchEditText"
             android:layout_alignParentTop="true"

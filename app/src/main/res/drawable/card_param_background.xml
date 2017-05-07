@@ -6,10 +6,7 @@
         android:bottomRightRadius="5dp"
         android:bottomLeftRadius="5dp">
     </corners>
-    <!--solid
-        android:color="#e5e5e5">
-    </solid-->
     <solid
-        android:color="#8e201f38">
+        android:color="@color/paramBackground">
     </solid>
 </shape>

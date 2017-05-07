@@ -38,7 +38,7 @@
 
             <TextView
                 android:text="NAME"
-                android:textColor="#fdf5b8"
+                android:textColor="@color/cardName"
                 android:textSize="22sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
 
             <TextView
                 android:text="TYPES"
-                android:textColor="#ececec"
+                android:textColor="@color/basicText"
                 android:textSize="16sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
 
             <TextView
                 android:text="P/T"
-                android:textColor="#ececec"
+                android:textColor="@color/basicText"
                 android:textSize="22sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
         <TextView
             android:layout_marginTop="10dp"
             android:text="TEXT"
-            android:textColor="#ececec"
+            android:textColor="@color/basicText"
             android:textSize="18sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

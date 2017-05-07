@@ -1,17 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- main  -->
     <color name="colorPrimary">#2a2c3e</color>
     <color name="paramBackground">#2a2c3e</color>
-
     <color name="colorPrimaryDark">#000000</color>
-
     <color name="mainBackground">#363e45</color>
-
     <color name="colorAccent">#fdf5b8</color>
     <color name="cardName">#fdf5b8</color>
+    <color name="basicText">#ececec</color>
+    <color name="secondaryText">#888888</color>
+    <color name="enterText">#fefefe</color>
+
+    <!-- popup  -->
     <color name="popupName">#e7d648</color>
     <color name="popupText">#bebebe</color>
-    <color name="basicText">#ececec</color>
+
+    <!-- foreground  -->
+    <color name="blurForeground">#000000</color>
+
+    <!-- frames -->
+    <color name="stroke">#888888</color>
+    <color name="solid">#fefefe</color>
+    <color name="gradientStart">#201f38</color>
+    <color name="gradientEnd">#1f2938</color>
+    <color name="gradientButtonStart">#fefefe</color>
+    <color name="gradientButtonEnd">#4b5051</color>
+
+    <!-- test  -->
+    <color name="red">#F00</color>
+    <color name="green">#0F0</color>
+    <color name="blue">#00F</color>
+    <color name="yellow">#FF0</color>
+    <color name="violet">#F0F</color>
+    <color name="cyan">#0FF</color>
+
+    <!-- others  -->
+    <color name="cardImageCorners">#e1e1e1</color>
 
 </resources>
