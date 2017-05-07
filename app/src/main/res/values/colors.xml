@@ -36,6 +36,6 @@
     <color name="cyan">#0FF</color>
 
     <!-- others  -->
-    <color name="cardImageCorners">#e1e1e1</color>
+    <color name="cardImageCorners">#fffafa</color>
 
 </resources>
