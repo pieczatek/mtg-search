@@ -1,10 +1,11 @@
 package com.icyjars.mtgcards.Fragment;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
@@ -21,11 +22,9 @@ import com.icyjars.mtgcards.R;
 import com.icyjars.mtgcards.Service.ServiceFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Call;
@@ -37,8 +36,10 @@ public class CardFragment extends Fragment {
     private View mView = null;
     private String cardName;
     private int multiverseid = -1;
-    private String imageUrl = null;
     private MtgioSingleCard.Card card;
+
+    public float MAX_IMAGE_SCALE = 4f;
+    public float CARD_LENGTH_RATIO = 3.5f / 2.5f;
 
     private static final Spannable.Factory spannableFactory = Spannable.Factory.getInstance();
 
@@ -84,7 +85,13 @@ public class CardFragment extends Fragment {
 
             response = call.execute();
             this.card = response.body().getCard();
-            fillTable();
+
+            fillTextView(card.getName(), R.id.cardName, true, "");
+            fillTextView(card.getType(), R.id.cardTypes, true, "");
+            fillTextView(card.getText(), R.id.cardText, true, "");
+            fillTextView(card.getManaCost(), R.id.cardCmc, true, "");
+            fillTextView(card.getPower(), R.id.cardPower, true, "");
+            fillTextView(card.getToughness(), R.id.cardPower, false, " / ");
 
         } catch (IOException e) {
 
@@ -101,7 +108,7 @@ public class CardFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    public InputStream getCardImageStream(){
+    public Bitmap getCardBitmap(boolean scale){
 
         OkHttpClient client = new OkHttpClient();
 
@@ -109,23 +116,28 @@ public class CardFragment extends Fragment {
                 .url(this.card.getImageUrl())
                 .build();
 
+        Bitmap bitmap;
         try {
-            return client.newCall(request).execute().body().byteStream();
-        }catch (IOException e){
+
+            bitmap = BitmapFactory.decodeStream(client.newCall(request).execute().body().byteStream());
+
+        } catch (IOException e){
+
             return null;
         }
 
-    }
+        if (scale) {
 
-    private void fillTable(){
+            int w = (int) (bitmap.getWidth() * MAX_IMAGE_SCALE);
+            int h = (int) (bitmap.getHeight() * MAX_IMAGE_SCALE);
 
-        fillTextView(card.getName(), R.id.cardName, true, "");
-        fillTextView(card.getType(), R.id.cardTypes, true, "");
-        fillTextView(card.getText(), R.id.cardText, true, "");
-        fillTextView(card.getManaCost(), R.id.cardCmc, true, "");
-        fillTextView(card.getPower(), R.id.cardPower, true, "");
-        fillTextView(card.getToughness(), R.id.cardPower, false, " / ");
+            return Bitmap.createScaledBitmap(bitmap, w, h, false);
 
+        } else {
+
+            return bitmap;
+
+        }
 
     }
 

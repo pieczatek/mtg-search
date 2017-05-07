@@ -2,16 +2,12 @@ package com.icyjars.mtgcards;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,14 +23,17 @@ import com.icyjars.mtgcards.Fragment.CardsListFragment;
 import com.icyjars.mtgcards.Fragment.SimpleSearchFragment;
 import com.icyjars.mtgcards.Model.Mtgio;
 
-import java.io.InputStream;
-
 public class MainActivity extends AppCompatActivity implements
         CardsListFragment.OnListFragmentInteractionListener,
         SimpleSearchFragment.OnNewSearchRecordListener {
 
     private final FragmentManager fragmentManager = getFragmentManager();
     private FrameLayout mainFrame;
+
+    private int SCREEN_WIDTH;
+    private int SCREEN_HEIGHT;
+    private int FOREGROUND_ALPHA_BASE = 0;
+    private int FOREGROUND_ALPHA_POPUP = 140;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +46,13 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        SCREEN_HEIGHT = metrics.heightPixels;
+        SCREEN_WIDTH = metrics.widthPixels;
+
         mainFrame = (FrameLayout) findViewById(R.id.main_app_frame_layout);
-        mainFrame.getForeground().setAlpha(0);
+        mainFrame.getForeground().setAlpha(FOREGROUND_ALPHA_BASE);
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.main_linear_layout, new SimpleSearchFragment(), "SEARCH");
@@ -85,9 +89,33 @@ public class MainActivity extends AppCompatActivity implements
 
                 ImageView popupImageView = ((ImageView) popupView.findViewById(R.id.card_imageview));
                 CardFragment currentCardFragment = (CardFragment) fragmentManager.findFragmentByTag("CARD");
-                InputStream stream = currentCardFragment.getCardImageStream();
-                Bitmap bitmap = BitmapFactory.decodeStream(stream);
+                Bitmap bitmap = currentCardFragment.getCardBitmap(true);
                 popupImageView.setImageBitmap(bitmap);
+
+                float cardRatio = currentCardFragment.CARD_LENGTH_RATIO;
+                float screenRatio = (float)SCREEN_HEIGHT / (float)SCREEN_WIDTH;
+
+                int popupHeight, popupWidth;
+
+                if(screenRatio > cardRatio){
+                    popupWidth = SCREEN_WIDTH;
+                    popupHeight = (int) (SCREEN_WIDTH * cardRatio);
+                }
+                else if (screenRatio < cardRatio){
+                    popupHeight = SCREEN_HEIGHT;
+                    popupWidth = (int)(SCREEN_HEIGHT / cardRatio);
+                }
+                else{
+                    popupHeight = SCREEN_HEIGHT;
+                    popupWidth = SCREEN_WIDTH;
+                }
+
+                float maxPopupScreenCover = 0.9f;
+
+                popupImageView.setMaxHeight( (int)(popupHeight * maxPopupScreenCover) );
+                popupImageView.setMaxWidth( (int)(popupWidth * maxPopupScreenCover) );
+
+                popupImageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
             }catch (NullPointerException e){
                 System.out.println(e.toString());
@@ -105,18 +133,17 @@ public class MainActivity extends AppCompatActivity implements
 
     private View showPopUp(int layID){
 
-
         View popupView = View.inflate(this,layID,null);
         PopupWindow popup = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);
         popup.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                mainFrame.getForeground().setAlpha(0);
+                mainFrame.getForeground().setAlpha(FOREGROUND_ALPHA_BASE);
             }
         });
 
         popup.showAtLocation(findViewById(R.id.main_linear_layout), Gravity.CENTER,0,0);
-        mainFrame.getForeground().setAlpha(140);
+        mainFrame.getForeground().setAlpha(FOREGROUND_ALPHA_POPUP);
 
         return popupView;
 
