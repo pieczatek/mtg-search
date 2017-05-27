@@ -2,6 +2,7 @@ package com.icyjars.mtgcards;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.StrictMode;

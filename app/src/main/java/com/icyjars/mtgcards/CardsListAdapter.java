@@ -1,10 +1,13 @@
 package com.icyjars.mtgcards;
 
 import android.app.Fragment;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.icyjars.mtgcards.Model.Mtgio;
@@ -84,11 +87,16 @@ public class CardsListAdapter extends RecyclerView.Adapter<CardsListAdapter.View
         holder.cardTypesTextView.setText(card.getType());
         holder.lastMultiverseId = card.getMultiverseid();
 
+        String primaryType = card.getTypes().get(0).toLowerCase();
+        Drawable listItemIconDrawable = mListener.getDrawableByName(primaryType);
+        holder.cardTypeImageView.setImageDrawable(listItemIconDrawable);
+
         holder.mListener = mListener;
     }
 
     public interface OnListItemClickListener{
         void onListItemClick(String cardName, int multiverseid);
+        Drawable getDrawableByName(String name);
     }
 
 
@@ -102,6 +110,7 @@ public class CardsListAdapter extends RecyclerView.Adapter<CardsListAdapter.View
 
         public TextView cardNameTextView;
         public TextView cardTypesTextView;
+        public ImageView cardTypeImageView;
         public OnListItemClickListener mListener = null;
         public int lastMultiverseId = 0;
 
@@ -109,6 +118,7 @@ public class CardsListAdapter extends RecyclerView.Adapter<CardsListAdapter.View
             super(v);
             cardNameTextView = (TextView) v.findViewById(R.id.card_name);
             cardTypesTextView = (TextView) v.findViewById(R.id.card_types);
+            cardTypeImageView = (ImageView) v.findViewById(R.id.list_view_item_icon);
             v.setOnClickListener(this);
         }
 

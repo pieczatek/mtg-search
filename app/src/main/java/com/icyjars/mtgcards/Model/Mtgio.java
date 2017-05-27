@@ -23,9 +23,11 @@ public class Mtgio {
         private String name;
         private String type;
         private int multiverseid;
+        private List<String> types;
 
         public String getName(){ return this.name; }
         public String getType(){ return this.type; }
+        public List<String> getTypes() { return this.types; }
         public int getMultiverseid(){ return this.multiverseid; }
         public void setMultiverseid(int multiverseid){ this.multiverseid = multiverseid; }
     }

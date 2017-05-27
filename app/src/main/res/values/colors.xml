@@ -18,6 +18,7 @@
 
     <!-- foreground  -->
     <color name="blurForeground">#000000</color>
+    <color name="listIcons">#aaaaaa</color>
 
     <!-- frames -->
     <color name="stroke">#888888</color>

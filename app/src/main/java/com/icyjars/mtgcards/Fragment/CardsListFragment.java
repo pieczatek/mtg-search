@@ -2,6 +2,7 @@ package com.icyjars.mtgcards.Fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -132,6 +133,13 @@ implements CardsListAdapter.OnListItemClickListener {
         }
     }
 
+
+    public int getResId(String name){
+        Resources resources = getResources();
+        final int resourceId = resources.getIdentifier(name, "drawable", getActivity().getPackageName());
+        return resourceId;
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -152,6 +160,15 @@ implements CardsListAdapter.OnListItemClickListener {
     @Override
     public void onListItemClick(String cardName, int multiverseid) {
         mListener.onListFragmentInteraction(cardName,multiverseid);
+    }
+
+    @Override
+    public Drawable getDrawableByName(String name){
+
+        Resources resources = getActivity().getResources();
+        int id = resources.getIdentifier(name,"drawable",getActivity().getPackageName());
+        return resources.getDrawable(id);
+
     }
 
 
